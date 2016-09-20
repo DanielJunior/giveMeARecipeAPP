@@ -1,4 +1,4 @@
-package com.example.danieljunior.givemearecipe;
+package br.com.danieljunior.givemearecipe;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

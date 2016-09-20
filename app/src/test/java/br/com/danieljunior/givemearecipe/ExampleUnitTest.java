@@ -1,4 +1,4 @@
-package com.example.danieljunior.givemearecipe;
+package br.com.danieljunior.givemearecipe;
 
 import org.junit.Test;
 
