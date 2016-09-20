@@ -9,7 +9,6 @@ import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,20 +17,10 @@ import android.widget.EditText;
 
 import com.example.danieljunior.givemearecipe.R;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import br.com.danieljunior.givemearecipe.utils.NetworkUtils;
@@ -47,8 +36,8 @@ public class FirstFragment extends Fragment {
     EditText ingredientsText;
     Button searchBtn;
     final ArrayList<String> ingredientsSelected = new ArrayList();
-    Dialog dialog;
-    AlertDialog.Builder builder;
+    Dialog ingredientsForSelect;
+    AlertDialog.Builder dialogBuilder;
     ArrayList<String> loadedIngredients;
 
     @Override
@@ -72,9 +61,19 @@ public class FirstFragment extends Fragment {
     }
 
     public void setupListeners() {
-        builder = new AlertDialog.Builder(this.getContext());
-        builder.setTitle("Select yours ingredients : ");
-        builder.setMultiChoiceItems(ingredients, null,
+
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+    }
+
+    private void setupIngredientsDialog() {
+        dialogBuilder = new AlertDialog.Builder(this.getContext());
+        dialogBuilder.setTitle("Selecione seus ingredientes : ");
+        dialogBuilder.setMultiChoiceItems(ingredients, null,
                 new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int selectedItemId,
@@ -86,7 +85,7 @@ public class FirstFragment extends Fragment {
                         }
                     }
                 })
-                .setPositiveButton("Done!", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Pronto!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         String result = "";
@@ -96,7 +95,7 @@ public class FirstFragment extends Fragment {
                         ingredientsText.setText(result);
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                     }
@@ -105,14 +104,7 @@ public class FirstFragment extends Fragment {
         ingredientsText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.show();
-            }
-        });
-
-        searchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+                ingredientsForSelect.show();
             }
         });
     }
@@ -155,8 +147,9 @@ public class FirstFragment extends Fragment {
             if (!loadedIngredients.isEmpty()) {
                 ingredients = loadedIngredients.toArray(new String[0]);
             }
+            setupIngredientsDialog();
             setupListeners();
-            dialog = builder.create();
+            ingredientsForSelect = dialogBuilder.create();
             progressDialog.dismiss();
         }
     }
